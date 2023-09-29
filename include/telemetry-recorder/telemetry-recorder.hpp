@@ -14,7 +14,59 @@
 
 #pragma once
 
+#include <libhal/libhal-icm.hpp>
+#include <libhal/libhal-neo.hpp>
+#include <libhal/libhal-mpl.hpp>
+#include <libhal/libhal-microsd.hpp>
+#include <libhal/libhal-xbee.hpp>
+
+
 namespace hal::telemetry_recorder {
-class telemetry_recorder_replace_me
-{};
-}  // namespace hal::__device__
+class telemetry_recorder
+{
+
+public:
+
+struct telemetry_data{
+    float accel_x;
+    float accel_y;
+    float accel_z;
+    float gyro_x;
+    float gyro_y;
+    float gyro_z;
+    float imu_temp;
+    float gps_time;
+    float gps_lat;
+    float gps_long;
+    float gps_sats;
+    float gps_alt;
+    float baro_temp;
+    float baro_pressure;
+    float baro_altitude;
+}
+
+
+
+[[nodiscard]] static result<telemetry_recorder> create(hal::icm::icm20948& p_imu, hal::neo::neo_GPS& p_gps, hal::mpl::mpl3115a2& p_baro, hal::microsd::microsd_card& p_microsd, hal::xbee::xbee_radio& p_xbee);
+hal::result<telemetry_data> record();
+hal::result<std::span<hal::byte>> recieve();
+hal::status<void> transmit(std::string_view message);
+hal::status<void> store(std::string_view message);
+
+
+
+private:
+
+  explicit telemetry_recorder(hal::icm::icm20948& p_imu, hal::neo::neo_GPS& p_gps, hal::mpl::mpl3115a2& p_baro, hal::microsd::microsd_card& p_microsd, hal::xbee::xbee_radio& p_xbee)
+    : m_icm(&p_imu)
+    , m_gps(&p_gps)
+    , m_mpl(&p_baro)
+    , m_microsd(&p_microsd)
+    , m_xbee(&p_xbee)
+  {
+  }
+
+  telemetry_data m_data;
+
+};
+}  // namespace hal::telemetry_recorder

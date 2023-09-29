@@ -21,7 +21,9 @@
 struct hardware_map
 {
   hal::serial* console;
+  hal::serial* xbee;
   hal::steady_clock* clock;
+  hal::i2c* i2c;
   hal::callback<void()> reset;
 };
 
