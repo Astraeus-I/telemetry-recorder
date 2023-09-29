@@ -1,12 +1,12 @@
-# libhal-__device__
+# libhal-
 
-[![✅ Checks](https://github.com/libhal/libhal-__device__/actions/workflows/ci.yml/badge.svg)](https://github.com/libhal/libhal-__device__/actions/workflows/ci.yml)
-[![Coverage](https://libhal.github.io/libhal-__device__/coverage/coverage.svg)](https://libhal.github.io/libhal-__device__/coverage/)
-[![GitHub stars](https://img.shields.io/github/stars/libhal/libhal-__device__.svg)](https://github.com/libhal/libhal-__device__/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/libhal/libhal-__device__.svg)](https://github.com/libhal/libhal-__device__/network)
-[![GitHub issues](https://img.shields.io/github/issues/libhal/libhal-__device__.svg)](https://github.com/libhal/libhal-__device__/issues)
+[![✅ Checks](https://github.com/libhal/libhal-/actions/workflows/ci.yml/badge.svg)](https://github.com/libhal/libhal-/actions/workflows/ci.yml)
+[![Coverage](https://libhal.github.io/libhal-/coverage/coverage.svg)](https://libhal.github.io/libhal-/coverage/)
+[![GitHub stars](https://img.shields.io/github/stars/libhal/libhal-.svg)](https://github.com/libhal/libhal-/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/libhal/libhal-.svg)](https://github.com/libhal/libhal-/network)
+[![GitHub issues](https://img.shields.io/github/issues/libhal/libhal-.svg)](https://github.com/libhal/libhal-/issues)
 
-libhal compatible device library for the __device__ device.
+libhal compatible device library for the  device.
 
 ## Contributing
 
@@ -41,7 +41,7 @@ To make your own libhal library:
 
 ## About the libhal-device template
 
-The libhal-__device__ repository is a template for creating device libraries in
+The libhal- repository is a template for creating device libraries in
 the libhal ecosystem. It provides a structured layout and a set of files to help
 you get started with creating your own device library.
 
@@ -80,7 +80,7 @@ the datasheet (and potentially mirrors of it) is an acceptable alternative.
 This directory contains demonstration applications showing how to use the device
 library. It includes:
 
-- `applications/__device__.cpp`: A sample application demonstrating usage of the
+- `applications/.cpp`: A sample application demonstrating usage of the
   device library.
 - `hardware_map.hpp`: A header file defining the hardware map for the demo
   applications.
@@ -88,16 +88,16 @@ library. It includes:
 - `platforms/lpc4074.cpp` and `platforms/lpc4078.cpp`: Platform-specific
   implementations for the demo applications.
 
-## include/libhal-__device__
+## include/libhal-
 
 This directory contains the header files for the device library. It currently
-includes `__device__.hpp`, which is a placeholder for the main header file of
+includes `.hpp`, which is a placeholder for the main header file of
 your device library.
 
 ## src
 
 This directory contains the source files for the device library. It currently
-includes `__device__.cpp`, which is a placeholder for the main source file of
+includes `.cpp`, which is a placeholder for the main source file of
 your device library.
 
 ## test_package
@@ -110,8 +110,8 @@ Conan recipe is working correctly.
 
 This directory contains tests for the device library. It includes:
 
-- `__device__.test.cpp`: A placeholder for tests for the device library.
+- `.test.cpp`: A placeholder for tests for the device library.
 - `main.test.cpp`: The main entry point for the tests.
 
-Remember to replace all instances of `__device__` with the actual name of the
+Remember to replace all instances of `` with the actual name of the
 device that your library is being built for.

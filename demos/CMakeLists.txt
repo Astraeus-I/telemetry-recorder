@@ -27,10 +27,10 @@ if("${platform_library}" STREQUAL "")
 endif()
 
 find_package(libhal-${platform_library} REQUIRED CONFIG)
-find_package(libhal-__device__ REQUIRED CONFIG)
+find_package(libhal- REQUIRED CONFIG)
 find_package(libhal-util REQUIRED CONFIG)
 
-set(DEMOS __device__)
+set(DEMOS )
 
 add_library(startup_code
     main.cpp
@@ -39,7 +39,7 @@ target_include_directories(startup_code PUBLIC .)
 target_compile_features(startup_code PRIVATE cxx_std_20)
 target_link_libraries(startup_code PRIVATE
     libhal::${platform_library}
-    libhal::__device__
+    libhal::
     libhal::util)
 
 foreach(demo IN LISTS DEMOS)
@@ -52,7 +52,7 @@ foreach(demo IN LISTS DEMOS)
     target_link_options(${current_project} PRIVATE --oslib=semihost)
     target_link_libraries(${current_project} PRIVATE
         libhal::${platform_library}
-        libhal::__device__
+        libhal::
         libhal::util
         startup_code)
     libhal_post_build(${current_project})
