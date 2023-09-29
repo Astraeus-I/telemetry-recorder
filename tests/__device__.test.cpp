@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <libhal-__device__/__device__.hpp>
+#include <telemetry-recorder/telemetry-recorder.hpp>
 
 #include <boost/ut.hpp>
 
-namespace hal::__device__ {
-void __device___test()
+namespace hal::telemetry_recorder {
+void telemetry_recorder_test()
 {
   using namespace boost::ut;
   using namespace std::literals;
 
-  "__device__::create()"_test = []() {
+  "telemetry_recorder::create()"_test = []() {
     // Setup
     // Exercise
     // Verify
   };
 };
-}  // namespace hal::__device__
+}  // namespace hal::telemetry_recorder

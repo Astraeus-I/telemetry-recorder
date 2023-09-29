@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "telemetry-recorder/telemetry-recorder.hpp"
 
-namespace hal::__device__ {
-class __device___replace_me
-{};
-}  // namespace hal::__device__
+namespace hal::telemetry_recorder {
+}  // namespace hal::elemetry_recorder

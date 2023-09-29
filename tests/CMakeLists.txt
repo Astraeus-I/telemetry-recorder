@@ -47,10 +47,10 @@ find_package(libhal-mock REQUIRED CONFIG)
 add_executable(${PROJECT_NAME}
 
   # Source files
-  ../src/__device__.cpp
+  ../src/telemetry-recorder.cpp
 
   # Test source files
-  __device__.test.cpp
+  telemetry-recorder.test.cpp
 
   # Main file for test
   main.test.cpp)
