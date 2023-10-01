@@ -16,17 +16,31 @@ cmake_minimum_required(VERSION 3.15)
 
 project(telemetry-recorder VERSION 0.0.1 LANGUAGES CXX)
 
+
 find_package(libhal REQUIRED CONFIG)
 find_package(libhal-util REQUIRED CONFIG)
+find_package(libhal-icm REQUIRED CONFIG)
+find_package(libhal-neo REQUIRED CONFIG)
+find_package(libhal-mpl REQUIRED CONFIG)
+find_package(libhal-microsd REQUIRED CONFIG)
+find_package(libhal-xbee REQUIRED CONFIG)
+
 
 add_library(telemetry-recorder src/telemetry-recorder.cpp)
 
-target_include_directories(telemetry-recorder PUBLIC include)
+target_include_directories(telemetry-recorder PUBLIC include
+)
+
 target_compile_features(telemetry-recorder PRIVATE cxx_std_20)
 target_compile_options(telemetry-recorder PRIVATE -Wall -Wextra)
 target_link_libraries(telemetry-recorder PRIVATE
   libhal::libhal
   libhal::util
+  libhal::icm
+  libhal::neo
+  libhal::mpl
+  libhal::microsd
+  libhal::xbee
 )
 
 if(NOT BUILD_TESTING STREQUAL OFF)

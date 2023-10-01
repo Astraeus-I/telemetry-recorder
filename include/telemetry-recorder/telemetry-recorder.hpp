@@ -14,11 +14,18 @@
 
 #pragma once
 
-#include <libhal/libhal-icm.hpp>
-#include <libhal/libhal-neo.hpp>
-#include <libhal/libhal-mpl.hpp>
-#include <libhal/libhal-microsd.hpp>
-#include <libhal/libhal-xbee.hpp>
+#include <libhal/functional.hpp>
+#include <libhal/serial.hpp>
+
+#include <libhal/timeout.hpp>
+#include <libhal/units.hpp>
+
+
+#include <libhal-icm/icm20948.hpp>
+#include <libhal-neo/neo.hpp>
+#include <libhal-mpl/mpl3115a2.hpp>
+#include <libhal-microsd/microsd.hpp>
+#include <libhal-xbee/xbee.hpp>
 
 
 namespace hal::telemetry_recorder {
@@ -43,19 +50,25 @@ struct telemetry_data{
     float baro_temp;
     float baro_pressure;
     float baro_altitude;
-}
-
-
+};
 
 [[nodiscard]] static result<telemetry_recorder> create(hal::icm::icm20948& p_imu, hal::neo::neo_GPS& p_gps, hal::mpl::mpl3115a2& p_baro, hal::microsd::microsd_card& p_microsd, hal::xbee::xbee_radio& p_xbee);
+
 hal::result<telemetry_data> record();
 hal::result<std::span<hal::byte>> recieve();
-hal::status<void> transmit(std::string_view message);
-hal::status<void> store(std::string_view message);
+hal::status transmit(std::string_view message);
+hal::status store(std::string_view message);
 
 
 
 private:
+
+  hal::icm::icm20948* m_icm;
+  hal::neo::neo_GPS* m_gps;
+  hal::mpl::mpl3115a2* m_mpl;
+  hal::microsd::microsd_card* m_microsd;
+  hal::xbee::xbee_radio* m_xbee;
+
 
   explicit telemetry_recorder(hal::icm::icm20948& p_imu, hal::neo::neo_GPS& p_gps, hal::mpl::mpl3115a2& p_baro, hal::microsd::microsd_card& p_microsd, hal::xbee::xbee_radio& p_xbee)
     : m_icm(&p_imu)

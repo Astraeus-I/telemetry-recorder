@@ -17,7 +17,8 @@
 
 int main()
 {
-  hal::telemetry_recorder::telemetry_recorder_replace_me bar;
+  // hal::telemetry_recorder::telemetry_recorder;
+  return 0;
 }
 
 namespace boost {

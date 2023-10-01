@@ -42,6 +42,7 @@ endif()
 find_package(ut REQUIRED CONFIG)
 find_package(libhal REQUIRED CONFIG)
 find_package(libhal-util REQUIRED CONFIG)
+find_package(libhal-icm REQUIRED CONFIG)
 find_package(libhal-mock REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME}
@@ -81,4 +82,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   boost-ext-ut::ut
   libhal::libhal
   libhal::util
+  libhal::icm
   libhal::mock)

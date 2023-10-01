@@ -16,6 +16,7 @@
 #include <libhal-armcortex/startup.hpp>
 #include <libhal-armcortex/system_control.hpp>
 #include <libhal-lpc40/clock.hpp>
+#include <libhal-lpc40/i2c.hpp>
 #include <libhal-lpc40/constants.hpp>
 #include <libhal-lpc40/uart.hpp>
 #include <libhal-util/as_bytes.hpp>
@@ -41,6 +42,8 @@ hal::result<hardware_map> initialize_platform()
   static hal::cortex_m::dwt_counter counter(cpu_frequency);
 
   static std::array<hal::byte, 64> uart0_buffer{};
+  static std::array<hal::byte, 812> uart1_buffer{};
+  static std::array<hal::byte, 812> uart2_buffer{};
   // Get and initialize UART0 for UART based logging
   static auto uart0 = HAL_CHECK(hal::lpc40::uart::get(0,
                                                       uart0_buffer,
@@ -48,8 +51,14 @@ hal::result<hardware_map> initialize_platform()
                                                         .baud_rate = 115200,
                                                       }));
 
-      static auto uart1 = HAL_CHECK(hal::lpc40::uart::get(1,
+  static auto uart1 = HAL_CHECK(hal::lpc40::uart::get(1,
                                                       uart1_buffer,
+                                                      hal::serial::settings{
+                                                        .baud_rate = 9600,
+                                                      }));
+
+  static auto uart2 = HAL_CHECK(hal::lpc40::uart::get(2,
+                                                      uart2_buffer,
                                                       hal::serial::settings{
                                                         .baud_rate = 38400,
                                                       }));
@@ -62,6 +71,7 @@ hal::result<hardware_map> initialize_platform()
   return hardware_map{
     .console = &uart0,
     .xbee = &uart1,
+    .gps = &uart2,
     .clock = &counter,
     .i2c = &i2c,
     .reset = []() { hal::cortex_m::reset(); },

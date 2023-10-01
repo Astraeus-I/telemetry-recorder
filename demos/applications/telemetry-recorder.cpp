@@ -14,13 +14,13 @@
 
 #include <libhal-util/serial.hpp>
 #include <libhal-util/steady_clock.hpp>
-#include <libhal/libhal-icm.hpp>
-#include <libhal/libhal-microsd.hpp>
-#include <libhal/libhal-mpl.hpp>
-#include <libhal/libhal-neo.hpp>
-#include <libhal/libhal-xbee.hpp>
+
+#include <libhal-lpc40/output_pin.hpp>
+#include <libhal-lpc40/spi.hpp>
+#include <libhal-util/spi.hpp>
 
 #include "../hardware_map.hpp"
+#include<telemetry-recorder/telemetry-recorder.hpp>
 
 hal::status application(hardware_map& p_map)
 {
@@ -29,8 +29,8 @@ hal::status application(hardware_map& p_map)
 
   auto& clock = *p_map.clock;
   auto& console = *p_map.console;
-  auto& gps = *p_map.gps;
   auto& xbee = *p_map.xbee;
+  auto& gps = *p_map.gps;
   auto& i2c = *p_map.i2c;
 
   auto spi2 = HAL_CHECK(hal::lpc40::spi::get(2));
@@ -56,44 +56,49 @@ hal::status application(hardware_map& p_map)
   while (true) {
     hal::delay(clock, 500ms);
     hal::print(console, "\n=================== Data ===================\n");
+    auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
 
-    auto data = hal::print<512>(console,
-                    "G-Accel Values: x = %fg, y = %fg, z = %fg\n
-                    Gyro Values: x = %f, y = %f, z = %f\n 
-                    IMU Temperature: %f°C\n
-                    Barometer Temperature: % f°C\n
-                    Measured Pressure: %fPa\n
-                    Barometer Measured Altitude: %fm\n
-                    Latitude: %f\n
-                    Longitude: %f\n
-                    Number of satellites seen: %d\n
-                    Altitude: %f meters\n
-                    Time: %f\n",
-                      telemetry_recorder.accel_x,
-                      telemetry_recorder.accel_y,
-                      telemetry_recorder.accel_z,
-                      telemetry_recorder.gyro_x,
-                      telemetry_recorder.gyro_y,
-                      telemetry_recorder.gyro_z,
-                      telemetry_recorder.imu_temp,
-                      telemetry_recorder.baro_temp,
-                      telemetry_recorder.baro_pressure,
-                      telemetry_recorder.baro_altitude,
-                      telemetry_recorder.gps_lat,
-                      telemetry_recorder.gps_long,
-                      telemetry_recorder.gps_sats,
-                      telemetry_recorder.gps_alt,
-                      telemetry_recorder.gps_time);
+  char telem_data[512];
+  snprintf(telem_data, sizeof(telem_data),
+      "G-Accel Values: x = %fg, y = %fg, z = %fg\n"
+      "Gyro Values: x = %f, y = %f, z = %f\n"
+      "IMU Temperature: %f°C\n"
+      "Barometer Temperature: % f°C\n"
+      "Measured Pressure: %fPa\n"
+      "Barometer Measured Altitude: %fm\n"
+      "Latitude: %f\n"
+      "Longitude: %f\n"
+      "Number of satellites seen: %d\n"
+      "Altitude: %f meters\n"
+      "Time: %f\n",
+      telemetry_recorder_data.accel_x,
+      telemetry_recorder_data.accel_y,
+      telemetry_recorder_data.accel_z,
+      telemetry_recorder_data.gyro_x,
+      telemetry_recorder_data.gyro_y,
+      telemetry_recorder_data.gyro_z,
+      telemetry_recorder_data.imu_temp,
+      telemetry_recorder_data.baro_temp,
+      telemetry_recorder_data.baro_pressure,
+      telemetry_recorder_data.baro_altitude,
+      telemetry_recorder_data.gps_lat,
+      telemetry_recorder_data.gps_long,
+      telemetry_recorder_data.gps_sats,
+      telemetry_recorder_data.gps_alt,
+      telemetry_recorder_data.gps_time
+  );
+
+
+    hal::print<512>(console, telem_data);
 
     hal::print(console, "============================================\n\n");
-  }
 
   hal::print(console, "Transmitting Data to Ground Station...\n\n");
   telemetry_recorder.transmit("Here is some data!\n");
-  telemetry_recorder.transmit(data);
+  telemetry_recorder.transmit(telem_data);
 
   hal::print(console, "Storing Data to SD Card...\n\n");
-  telemetry_recorder.store(data);
+  telemetry_recorder.store(telem_data);
   hal::delay(clock, 500ms);
 
   hal::print(console, "Recieveing Data from Ground Station...\n\n");
@@ -101,6 +106,7 @@ hal::status application(hardware_map& p_map)
   hal::print(console, "\n=================== RECIEVED DATA ===================\n");
   hal::print(console, recieved_data);
   hal::print(console, "======================================================\n\n");
-
+  }
+  
   return hal::success();
 }
