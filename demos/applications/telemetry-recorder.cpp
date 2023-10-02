@@ -41,16 +41,15 @@ hal::status application(hardware_map& p_map)
   // Device initialization
   auto micro_sd =
     HAL_CHECK(hal::microsd::microsd_card::create(spi2, chip_select));
-  (void)hal::delay(clock, 200ms);
+  (void)hal::delay(clock, 100ms);
   auto neoGPS = HAL_CHECK(hal::neo::neo_GPS::create(gps));
-  (void)hal::delay(clock, 200ms);
+  (void)hal::delay(clock, 100ms);
   auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee));
-  (void)hal::delay(clock, 200ms);
+  (void)hal::delay(clock, 100ms);
   auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c));
-  (void)hal::delay(clock, 200ms);
+  (void)hal::delay(clock, 100ms);
   auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c, 0x69));
-  (void)hal::delay(clock, 200ms);
-  hal::delay(clock, 500ms);
+  (void)hal::delay(clock, 100ms);
 
   // device configuration
   icm_device.auto_offsets();
@@ -67,7 +66,6 @@ hal::status application(hardware_map& p_map)
   auto telemetry_recorder =
     HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
       icm_device, neoGPS, mpl_device, micro_sd, xbee_module));
-  hal::delay(clock, 500ms);
 
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
@@ -117,11 +115,10 @@ hal::status application(hardware_map& p_map)
 
     hal::print(console, "Recieveing Data from Ground Station...\n\n");
     auto recieved_data = HAL_CHECK(telemetry_recorder.recieve());
-    hal::print(console,
-               "\n=================== RECIEVED DATA ===================\n");
+    hal::print(console, "\n=================== RECIEVED DATA ===================\n");
     hal::print(console, recieved_data);
-    hal::print(console,
-               "======================================================\n\n");
+    hal::print(console, "======================================================\n\n");
+
   }
 
   return hal::success();

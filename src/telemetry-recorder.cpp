@@ -29,22 +29,13 @@ result<telemetry_recorder> telemetry_recorder::create(
 
 hal::result<telemetry_recorder::telemetry_data> telemetry_recorder::record()
 {
-  auto accel_result = m_icm->read_acceleration();
-  auto gyro_result = m_icm->read_gyroscope();
-  auto imu_temp_result = m_icm->read_temperature();
-
+  auto accel = HAL_CHECK(m_icm->read_acceleration());
+  auto gyro = HAL_CHECK(m_icm->read_gyroscope());
+  auto imu_temp = HAL_CHECK(m_icm->read_temperature());
   auto gps = HAL_CHECK(m_gps->read());
-
-  auto baro_temp_result = m_mpl->read_temperature();
-  auto pressure_result = m_mpl->read_pressure();
-  auto altitude_result = m_mpl->read_altitude();
-
-  auto accel = *accel_result;
-  auto gyro = *gyro_result;
-  auto imu_temp = *imu_temp_result;
-  auto baro_temp = *baro_temp_result;
-  auto pressure = *pressure_result;
-  auto altitude = *altitude_result;
+  auto baro_temp = HAL_CHECK(m_mpl->read_temperature());
+  auto pressure = HAL_CHECK(m_mpl->read_pressure());
+  auto altitude = HAL_CHECK(m_mpl->read_altitude());
 
   m_data.accel_x = accel.x;
   m_data.accel_y = accel.y;
