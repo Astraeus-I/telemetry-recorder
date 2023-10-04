@@ -54,7 +54,7 @@ hal::status application(hardware_map& p_map)
   // device configuration
   icm_device.auto_offsets();
 
-  int8_t alt_offset = 0;
+  int8_t alt_offset = 78; // change this to acquire accurate altitude at rest
   mpl_device.set_altitude_offset(alt_offset);
   // Set sea level pressure to 30 Hg
   float slp = 101325;  // Default is 101325 Pa
@@ -70,7 +70,6 @@ hal::status application(hardware_map& p_map)
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
     auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
-      hal::delay(clock, 100ms);
 
     char telem_data[512];
     snprintf(telem_data,
@@ -101,7 +100,7 @@ hal::status application(hardware_map& p_map)
              telemetry_recorder_data.gps_sats,
              telemetry_recorder_data.gps_alt,
              telemetry_recorder_data.gps_time);
-
+ 
     hal::print<512>(console, telem_data);
 
     hal::print(console, "============================================\n\n");
