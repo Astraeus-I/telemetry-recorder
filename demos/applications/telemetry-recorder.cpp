@@ -51,25 +51,31 @@ hal::status application(hardware_map& p_map)
   auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c, 0x69));
   (void)hal::delay(clock, 100ms);
 
-  // device configuration
+  auto telemetry_recorder =
+    HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
+      icm_device, neoGPS, mpl_device, micro_sd, xbee_module));
+  auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
+
+  while (!telemetry_recorder_data.gps_locked) {
+    hal::print(console,
+               "Not enough satellites to get altitude offset. May take upto 3 "
+               "minutes\n");
+    telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
+    (void)hal::delay(clock, 3000ms);
+  }
+
   icm_device.auto_offsets();
 
-  int8_t alt_offset = 78; // change this to acquire accurate altitude at rest
-  mpl_device.set_altitude_offset(alt_offset);
-  // Set sea level pressure to 30 Hg
+  auto offset = HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
+  mpl_device.set_altitude_offset(offset);
   float slp = 101325;  // Default is 101325 Pa
-
   mpl_device.set_sea_pressure(slp);
 
   xbee_module.configure_xbee("C", "2015");  // Channel C, PANID 2015
 
-  auto telemetry_recorder =
-    HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
-      icm_device, neoGPS, mpl_device, micro_sd, xbee_module));
-
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
-    auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
+    telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
 
     char telem_data[512];
     snprintf(telem_data,
@@ -100,7 +106,7 @@ hal::status application(hardware_map& p_map)
              telemetry_recorder_data.gps_sats,
              telemetry_recorder_data.gps_alt,
              telemetry_recorder_data.gps_time);
- 
+
     hal::print<512>(console, telem_data);
 
     hal::print(console, "============================================\n\n");
@@ -114,10 +120,11 @@ hal::status application(hardware_map& p_map)
 
     hal::print(console, "Recieveing Data from Ground Station...\n\n");
     auto recieved_data = HAL_CHECK(telemetry_recorder.recieve());
-    hal::print(console, "\n=================== RECIEVED DATA ===================\n");
+    hal::print(console,
+               "\n=================== RECIEVED DATA ===================\n");
     hal::print(console, recieved_data);
-    hal::print(console, "======================================================\n\n");
-
+    hal::print(console,
+               "======================================================\n\n");
   }
 
   return hal::success();

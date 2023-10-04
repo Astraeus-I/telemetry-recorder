@@ -45,6 +45,7 @@ hal::result<telemetry_recorder::telemetry_data> telemetry_recorder::record()
   m_data.gyro_z = gyro.z;
   m_data.imu_temp = imu_temp.temp;
 
+  m_data.gps_locked = gps.is_locked;
   m_data.gps_time = gps.time;
   m_data.gps_lat = gps.latitude;
   m_data.gps_long = gps.longitude;
@@ -56,6 +57,11 @@ hal::result<telemetry_recorder::telemetry_data> telemetry_recorder::record()
   m_data.baro_altitude = altitude.altitude;
 
   return hal::result<telemetry_recorder::telemetry_data>{ m_data };
+}
+
+hal::result<float> telemetry_recorder::gps_baro_altitude_offset()
+{
+  return m_data.gps_alt - m_data.baro_altitude;
 }
 
 hal::result<std::span<hal::byte>> telemetry_recorder::recieve()
