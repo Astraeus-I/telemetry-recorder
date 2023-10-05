@@ -54,20 +54,11 @@ hal::status application(hardware_map& p_map)
   auto telemetry_recorder =
     HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
       icm_device, neoGPS, mpl_device, micro_sd, xbee_module));
-  auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
-
-  while (!telemetry_recorder_data.gps_locked) {
-    hal::print(console,
-               "Not enough satellites to get altitude offset. May take upto 3 "
-               "minutes\n");
-    telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
-    (void)hal::delay(clock, 3000ms);
-  }
 
   icm_device.auto_offsets();
 
-  auto offset = HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
-  mpl_device.set_altitude_offset(offset);
+  auto alt_offset = 80;
+  mpl_device.set_altitude_offset(alt_offset); //set initial altitude offset
   float slp = 101325;  // Default is 101325 Pa
   mpl_device.set_sea_pressure(slp);
 
@@ -75,7 +66,15 @@ hal::status application(hardware_map& p_map)
 
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
-    telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
+    auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
+
+    if (telemetry_recorder_data.gps_locked == false){
+      hal::print(console, "!!!GPS not locked!!!\n");
+    }else{
+      hal::print(console, "GPS locked\n");
+      auto gps_offset = HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
+      mpl_device.set_altitude_offset(gps_offset);
+    }
 
     char telem_data[512];
     snprintf(telem_data,
@@ -86,7 +85,7 @@ hal::status application(hardware_map& p_map)
              "Barometer Temperature: % f°C\n"
              "Measured Pressure: %fPa\n"
              "Barometer Measured Altitude: %fm\n"
-             "Latitude: %f\n"
+             "\n\nLatitude: %f\n"
              "Longitude: %f\n"
              "Number of satellites seen: %d\n"
              "Altitude: %f meters\n"
@@ -125,6 +124,8 @@ hal::status application(hardware_map& p_map)
     hal::print(console, recieved_data);
     hal::print(console,
                "======================================================\n\n");
+
+    (void)hal::delay(clock, 100ms);
   }
 
   return hal::success();

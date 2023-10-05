@@ -43,7 +43,7 @@ hal::result<hardware_map> initialize_platform()
 
   static std::array<hal::byte, 64> uart0_buffer{};
   static std::array<hal::byte, 812> uart1_buffer{};
-  static std::array<hal::byte, 812> uart2_buffer{};
+  static std::array<hal::byte, 812> uart3_buffer{};
   // Get and initialize UART0 for UART based logging
   static auto uart0 = HAL_CHECK(hal::lpc40::uart::get(0,
                                                       uart0_buffer,
@@ -57,10 +57,10 @@ hal::result<hardware_map> initialize_platform()
                                                         .baud_rate = 115200,
                                                       }));
 
-  static auto uart2 = HAL_CHECK(hal::lpc40::uart::get(2,
-                                                      uart2_buffer,
+  static auto uart3 = HAL_CHECK(hal::lpc40::uart::get(3,
+                                                      uart3_buffer,
                                                       hal::serial::settings{
-                                                        .baud_rate = 38400,
+                                                        .baud_rate = 9600,
                                                       }));
 
   static auto i2c = HAL_CHECK((hal::lpc40::i2c::get(2,
@@ -71,7 +71,7 @@ hal::result<hardware_map> initialize_platform()
   return hardware_map{
     .console = &uart0,
     .xbee = &uart1,
-    .gps = &uart2,
+    .gps = &uart3,
     .clock = &counter,
     .i2c = &i2c,
     .reset = []() { hal::cortex_m::reset(); },
