@@ -69,7 +69,7 @@ hal::status application(hardware_map& p_map)
     auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
 
     if (telemetry_recorder_data.gps_locked == false){
-      hal::print(console, "!!!GPS not locked!!!\n");
+      hal::print(console, "!!!GPS not fully locked!!!\n");
     }else{
       hal::print(console, "GPS locked\n");
       auto gps_offset = HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
