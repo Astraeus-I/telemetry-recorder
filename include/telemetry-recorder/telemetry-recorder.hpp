@@ -23,7 +23,7 @@
 #include <libhal-icm/icm20948.hpp>
 #include <libhal-microsd/microsd.hpp>
 #include <libhal-mpl/mpl3115a2.hpp>
-#include <libhal-neo/neo.hpp>
+#include <libhal-neo/neo-m9n.hpp>
 #include <libhal-xbee/xbee.hpp>
 
 namespace hal::telemetry_recorder {
@@ -40,6 +40,9 @@ public:
     float gyro_y;
     float gyro_z;
     float imu_temp;
+    float mag_x;
+    float mag_y;
+    float mag_z;
     bool gps_locked;
     float gps_time;
     float gps_lat;
@@ -53,7 +56,7 @@ public:
 
   [[nodiscard]] static result<telemetry_recorder> create(
     hal::icm::icm20948& p_imu,
-    hal::neo::neo_GPS& p_gps,
+    hal::neo::neo_m9n& p_gps,
     hal::mpl::mpl3115a2& p_baro,
     hal::microsd::microsd_card& p_microsd,
     hal::xbee::xbee_radio& p_xbee);
@@ -66,13 +69,13 @@ public:
 
 private:
   hal::icm::icm20948* m_icm;
-  hal::neo::neo_GPS* m_gps;
+  hal::neo::neo_m9n* m_gps;
   hal::mpl::mpl3115a2* m_mpl;
   hal::microsd::microsd_card* m_microsd;
   hal::xbee::xbee_radio* m_xbee;
 
   explicit telemetry_recorder(hal::icm::icm20948& p_imu,
-                              hal::neo::neo_GPS& p_gps,
+                              hal::neo::neo_m9n& p_gps,
                               hal::mpl::mpl3115a2& p_baro,
                               hal::microsd::microsd_card& p_microsd,
                               hal::xbee::xbee_radio& p_xbee)

@@ -18,7 +18,7 @@ namespace hal::telemetry_recorder {
 
 result<telemetry_recorder> telemetry_recorder::create(
   hal::icm::icm20948& p_imu,
-  hal::neo::neo_GPS& p_gps,
+  hal::neo::neo_m9n& p_gps,
   hal::mpl::mpl3115a2& p_baro,
   hal::microsd::microsd_card& p_microsd,
   hal::xbee::xbee_radio& p_xbee)
@@ -31,6 +31,7 @@ hal::result<telemetry_recorder::telemetry_data> telemetry_recorder::record()
 {
   auto accel = HAL_CHECK(m_icm->read_acceleration());
   auto gyro = HAL_CHECK(m_icm->read_gyroscope());
+  auto mag = HAL_CHECK(m_icm->read_magnetometer());
   auto imu_temp = HAL_CHECK(m_icm->read_temperature());
   auto gps = HAL_CHECK(m_gps->read());
   auto baro_temp = HAL_CHECK(m_mpl->read_temperature());
@@ -43,7 +44,11 @@ hal::result<telemetry_recorder::telemetry_data> telemetry_recorder::record()
   m_data.gyro_x = gyro.x;
   m_data.gyro_y = gyro.y;
   m_data.gyro_z = gyro.z;
+  m_data.mag_x = mag.x;
+  m_data.mag_y = mag.y;
+  m_data.mag_z = mag.z;
   m_data.imu_temp = imu_temp.temp;
+
 
   m_data.gps_locked = gps.is_locked;
   m_data.gps_time = gps.time;

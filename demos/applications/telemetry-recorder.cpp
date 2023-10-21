@@ -36,15 +36,15 @@ hal::status application(hardware_map& p_map)
   auto spi2 = HAL_CHECK(hal::lpc40::spi::get(2));
   auto chip_select = HAL_CHECK(hal::lpc40::output_pin::get(1, 8));
 
-  hal::print(console, "Demo Telemetry Recorder Starting...\n\n");
+  hal::print(console, "\n\nTelemetry Recorder Starting...\n\n");
 
   // Device initialization
   auto micro_sd =
     HAL_CHECK(hal::microsd::microsd_card::create(spi2, chip_select));
   (void)hal::delay(clock, 100ms);
-  auto neoGPS = HAL_CHECK(hal::neo::neo_GPS::create(gps));
+  auto neoGPS = HAL_CHECK(hal::neo::neo_m9n::create(gps));
   (void)hal::delay(clock, 100ms);
-  auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee));
+  auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee, clock));
   (void)hal::delay(clock, 100ms);
   auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c));
   (void)hal::delay(clock, 100ms);
@@ -55,24 +55,29 @@ hal::status application(hardware_map& p_map)
     HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
       icm_device, neoGPS, mpl_device, micro_sd, xbee_module));
 
+  icm_device.init_mag();
+  (void)hal::delay(clock, 100ms);
   icm_device.auto_offsets();
 
   auto alt_offset = 80;
-  mpl_device.set_altitude_offset(alt_offset); //set initial altitude offset
-  float slp = 101325;  // Default is 101325 Pa
+  mpl_device.set_altitude_offset(alt_offset);  // set initial altitude offset
+  float slp = 101325;                          // Default is 101325 Pa
   mpl_device.set_sea_pressure(slp);
 
   xbee_module.configure_xbee("C", "2015");  // Channel C, PANID 2015
+
+  hal::print(console, "\nTelemetry Configuration Complete...\n\n");
 
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
     auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
 
-    if (telemetry_recorder_data.gps_locked == false){
+    if (telemetry_recorder_data.gps_locked == false) {
       hal::print(console, "!!!GPS not fully locked!!!\n");
-    }else{
+    } else {
       hal::print(console, "GPS locked\n");
-      auto gps_offset = HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
+      auto gps_offset =
+        HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
       mpl_device.set_altitude_offset(gps_offset);
     }
 
@@ -81,6 +86,7 @@ hal::status application(hardware_map& p_map)
              sizeof(telem_data),
              "G-Accel Values: x = %fg, y = %fg, z = %fg\n"
              "Gyro Values: x = %f, y = %f, z = %f\n"
+             "Mag Values: x = %f, y = %f, z = %f\n"
              "IMU Temperature: %f°C\n"
              "Barometer Temperature: % f°C\n"
              "Measured Pressure: %fPa\n"
@@ -96,6 +102,9 @@ hal::status application(hardware_map& p_map)
              telemetry_recorder_data.gyro_x,
              telemetry_recorder_data.gyro_y,
              telemetry_recorder_data.gyro_z,
+             telemetry_recorder_data.mag_x,
+             telemetry_recorder_data.mag_y,
+             telemetry_recorder_data.mag_z,
              telemetry_recorder_data.imu_temp,
              telemetry_recorder_data.baro_temp,
              telemetry_recorder_data.baro_pressure,
