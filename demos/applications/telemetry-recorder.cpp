@@ -22,6 +22,20 @@
 #include "../hardware_map.hpp"
 #include <telemetry-recorder/telemetry-recorder.hpp>
 
+
+#define M_PI 3.14159265358979323846
+
+float computeHeading(float x, float y, float offset = 0.0) { 
+    float angle = 360 - (atan2(y, x) * (180.0 / M_PI));
+    angle += offset;  // Apply offset
+    if (angle < 0) {
+        angle += 360;
+    } else if (angle >= 360) {
+        angle -= 360;
+    }
+    return angle;
+}
+
 hal::status application(hardware_map& p_map)
 {
   using namespace std::chrono_literals;
@@ -46,9 +60,9 @@ hal::status application(hardware_map& p_map)
   (void)hal::delay(clock, 100ms);
   auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee, clock));
   (void)hal::delay(clock, 100ms);
-  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c));
+  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c, hal::mpl::mpl3115a2::mpl_os_rate::os32)); // change barometer sampling rate
   (void)hal::delay(clock, 100ms);
-  auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c, 0x69));
+  auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c));
   (void)hal::delay(clock, 100ms);
 
   auto telemetry_recorder =
@@ -64,7 +78,7 @@ hal::status application(hardware_map& p_map)
   float slp = 101325;                          // Default is 101325 Pa
   mpl_device.set_sea_pressure(slp);
 
-  xbee_module.configure_xbee("C", "2015");  // Channel C, PANID 2015
+  xbee_module.configure_xbee("C", "2015");  // Setting radio to channel C, and PANID 2015
 
   hal::print(console, "\nTelemetry Configuration Complete...\n\n");
 
@@ -115,9 +129,12 @@ hal::status application(hardware_map& p_map)
              telemetry_recorder_data.gps_alt,
              telemetry_recorder_data.gps_time);
 
-    hal::print<512>(console, telem_data);
 
-    hal::print(console, "============================================\n\n");
+    hal::print<512>(console, telem_data);
+    float heading = computeHeading(telemetry_recorder_data.mag_x, telemetry_recorder_data.mag_y, 0.0);
+    hal::print<128>(console, "\n\nHeading: %f°", heading);
+
+    hal::print(console, "\n\n============================================\n\n");
 
     hal::print(console, "Transmitting Data to Ground Station...\n\n");
     telemetry_recorder.transmit("Here is some data!\n");
@@ -134,7 +151,6 @@ hal::status application(hardware_map& p_map)
     hal::print(console,
                "======================================================\n\n");
 
-    (void)hal::delay(clock, 100ms);
   }
 
   return hal::success();
