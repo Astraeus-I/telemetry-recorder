@@ -51,12 +51,6 @@ hal::result<hardware_map> initialize_platform()
                                                         .baud_rate = 115200,
                                                       }));
 
-  static auto uart1 = HAL_CHECK(hal::lpc40::uart::get(1,
-                                                      uart1_buffer,
-                                                      hal::serial::settings{
-                                                        .baud_rate = 115200,
-                                                      }));
-
   static auto i2c = HAL_CHECK((hal::lpc40::i2c::get(2,
                                                   hal::i2c::settings{
                                                     .clock_rate = 100.0_kHz,
@@ -68,6 +62,11 @@ hal::result<hardware_map> initialize_platform()
                                                         .baud_rate = 38400,
                                                       }));
 
+  static auto uart1 = HAL_CHECK(hal::lpc40::uart::get(1,
+                                                      uart1_buffer,
+                                                      hal::serial::settings{
+                                                        .baud_rate = 9600,
+                                                      }));
 
 
   return hardware_map{

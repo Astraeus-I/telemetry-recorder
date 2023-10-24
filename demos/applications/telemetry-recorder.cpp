@@ -50,7 +50,7 @@ hal::status application(hardware_map& p_map)
   auto spi2 = HAL_CHECK(hal::lpc40::spi::get(2));
   auto chip_select = HAL_CHECK(hal::lpc40::output_pin::get(1, 8));
 
-  hal::print(console, "\n\nTelemetry Recorder Starting...\n\n");
+  hal::print(console, "\n\nTelemetry Recorder Starting. May take a few seconds...\n\n");
 
   // Device initialization
   auto micro_sd =
@@ -130,6 +130,7 @@ hal::status application(hardware_map& p_map)
              telemetry_recorder_data.gps_time);
 
 
+
     hal::print<512>(console, telem_data);
     float heading = computeHeading(telemetry_recorder_data.mag_x, telemetry_recorder_data.mag_y, 0.0);
     hal::print<128>(console, "\n\nHeading: %f°", heading);
@@ -137,19 +138,21 @@ hal::status application(hardware_map& p_map)
     hal::print(console, "\n\n============================================\n\n");
 
     hal::print(console, "Transmitting Data to Ground Station...\n\n");
-    telemetry_recorder.transmit("Here is some data!\n");
+
+    std::string_view message = "\nHello here is some data\n";
+
+    telemetry_recorder.transmit(message);
     telemetry_recorder.transmit(telem_data);
 
-    hal::print(console, "Storing Data to SD Card...\n\n");
-    telemetry_recorder.store(telem_data);
-
     hal::print(console, "Recieveing Data from Ground Station...\n\n");
-    auto recieved_data = HAL_CHECK(telemetry_recorder.recieve());
+    auto recieved_data1 = HAL_CHECK(telemetry_recorder.recieve());
     hal::print(console,
                "\n=================== RECIEVED DATA ===================\n");
-    hal::print(console, recieved_data);
+    hal::print(console, recieved_data1);
     hal::print(console,
-               "======================================================\n\n");
+               "\n======================================================\n\n");
+
+    // hal::delay(clock, 500ms); // enable to see status of XBEE radio
 
   }
 

@@ -65,6 +65,7 @@ public:
   hal::result<float> gps_baro_altitude_offset();
   hal::result<std::span<hal::byte>> recieve();
   hal::status transmit(std::string_view message);
+  hal::status transmit(const char* formatted_data);
   hal::status store(std::string_view message);
 
 private:

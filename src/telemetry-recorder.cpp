@@ -75,10 +75,14 @@ hal::result<std::span<hal::byte>> telemetry_recorder::recieve()
   return data;
 }
 
-hal::status telemetry_recorder::transmit(std::string_view message)
-{
-  m_xbee->write(hal::as_bytes(message));
-  return hal::success();
+hal::status telemetry_recorder::transmit(std::string_view message) {
+    auto byte_data = hal::as_bytes(message);
+    m_xbee->write(byte_data);
+    return hal::success();
+}
+
+hal::status telemetry_recorder::transmit(const char* formatted_data) {
+    return this->transmit(std::string_view(formatted_data));
 }
 
 hal::status telemetry_recorder::store(std::string_view message)
