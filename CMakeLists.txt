@@ -22,7 +22,6 @@ find_package(libhal-util REQUIRED CONFIG)
 find_package(libhal-icm REQUIRED CONFIG)
 find_package(libhal-neo REQUIRED CONFIG)
 find_package(libhal-mpl REQUIRED CONFIG)
-find_package(libhal-microsd REQUIRED CONFIG)
 find_package(libhal-xbee REQUIRED CONFIG)
 
 
@@ -39,7 +38,6 @@ target_link_libraries(telemetry-recorder PRIVATE
   libhal::icm
   libhal::neo
   libhal::mpl
-  libhal::microsd
   libhal::xbee
 )
 

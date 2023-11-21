@@ -20,10 +20,9 @@ result<telemetry_recorder> telemetry_recorder::create(
   hal::icm::icm20948& p_imu,
   hal::neo::neo_m9n& p_gps,
   hal::mpl::mpl3115a2& p_baro,
-  hal::microsd::microsd_card& p_microsd,
   hal::xbee::xbee_radio& p_xbee)
 {
-  telemetry_recorder recorder{ p_imu, p_gps, p_baro, p_microsd, p_xbee };
+  telemetry_recorder recorder{ p_imu, p_gps, p_baro, p_xbee };
   return recorder;
 }
 
@@ -83,12 +82,6 @@ hal::status telemetry_recorder::transmit(std::string_view message) {
 
 hal::status telemetry_recorder::transmit(const char* formatted_data) {
     return this->transmit(std::string_view(formatted_data));
-}
-
-hal::status telemetry_recorder::store(std::string_view message)
-{
-  // m_microsd->write(hal::as_bytes(message));
-  return hal::success();
 }
 
 }  // namespace hal::telemetry_recorder
