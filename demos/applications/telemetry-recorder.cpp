@@ -47,14 +47,8 @@ hal::status application(hardware_map& p_map)
   auto& gps = *p_map.gps;
   auto& i2c = *p_map.i2c;
 
-  auto spi2 = HAL_CHECK(hal::lpc40::spi::get(2));
-  auto chip_select = HAL_CHECK(hal::lpc40::output_pin::get(1, 8));
-
   hal::print(console, "\n\nTelemetry Recorder Starting. May take a few seconds...\n\n");
 
-  // Device initialization
-  auto micro_sd =
-    HAL_CHECK(hal::microsd::microsd_card::create(spi2, chip_select));
   (void)hal::delay(clock, 100ms);
   auto neoGPS = HAL_CHECK(hal::neo::neo_m9n::create(gps));
   (void)hal::delay(clock, 100ms);
@@ -67,7 +61,7 @@ hal::status application(hardware_map& p_map)
 
   auto telemetry_recorder =
     HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
-      icm_device, neoGPS, mpl_device, micro_sd, xbee_module));
+      icm_device, neoGPS, mpl_device, xbee_module));
 
   icm_device.init_mag();
   (void)hal::delay(clock, 100ms);
