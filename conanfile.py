@@ -62,7 +62,7 @@ class telemetry_recorder_conan(ConanFile):
         self.test_requires("boost-ext-ut/1.1.9")
 
     def requirements(self):
-        self.requires("libhal/2.0.3", transitive_headers=True)
+        self.requires("libhal/2.2.0", transitive_headers=True)
         self.requires("libhal-util/[^3.0.0]")
         self.requires("libhal-icm/[^0.0.1]")
         self.requires("libhal-neo/[^0.0.1]")

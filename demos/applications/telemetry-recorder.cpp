@@ -54,7 +54,7 @@ hal::status application(hardware_map& p_map)
   (void)hal::delay(clock, 100ms);
   auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee, clock));
   (void)hal::delay(clock, 100ms);
-  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c, hal::mpl::mpl3115a2::mpl_os_rate::os32)); // change barometer sampling rate
+  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c)); // change barometer sampling rate
   (void)hal::delay(clock, 100ms);
   auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c));
   (void)hal::delay(clock, 100ms);
@@ -72,22 +72,22 @@ hal::status application(hardware_map& p_map)
   float slp = 101325;                          // Default is 101325 Pa
   mpl_device.set_sea_pressure(slp);
 
-  xbee_module.configure_xbee("C", "2015");  // Setting radio to channel C, and PANID 2015
+  // xbee_module.configure_xbee("C", "2015");  // Setting radio to channel C, and PANID 2015
 
-  hal::print(console, "\nTelemetry Configuration Complete...\n\n");
+  // hal::print(console, "\nTelemetry Configuration Complete...\n\n");
 
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
     auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
 
-    if (telemetry_recorder_data.gps_locked == false) {
-      hal::print(console, "!!!GPS not fully locked!!!\n");
-    } else {
-      hal::print(console, "GPS locked\n");
-      auto gps_offset =
-        HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
-      mpl_device.set_altitude_offset(gps_offset);
-    }
+    // if (telemetry_recorder_data.gps_locked == false) {
+    //   hal::print(console, "!!!GPS not fully locked!!!\n");
+    // } else {
+    //   hal::print(console, "GPS locked\n");
+    //   auto gps_offset =
+    //     HAL_CHECK(telemetry_recorder.gps_baro_altitude_offset());
+    //   mpl_device.set_altitude_offset(gps_offset);
+    // }
 
     char telem_data[512];
     snprintf(telem_data,
@@ -131,20 +131,20 @@ hal::status application(hardware_map& p_map)
 
     hal::print(console, "\n\n============================================\n\n");
 
-    hal::print(console, "Transmitting Data to Ground Station...\n\n");
+    // hal::print(console, "Transmitting Data to Ground Station...\n\n");
 
-    std::string_view message = "\nHello here is some data\n";
+    // std::string_view message = "\nHello here is some data\n";
 
-    telemetry_recorder.transmit(message);
-    telemetry_recorder.transmit(telem_data);
+    // telemetry_recorder.transmit(message);
+    // telemetry_recorder.transmit(telem_data);
 
-    hal::print(console, "Recieveing Data from Ground Station...\n\n");
-    auto recieved_data1 = HAL_CHECK(telemetry_recorder.recieve());
-    hal::print(console,
-               "\n=================== RECIEVED DATA ===================\n");
-    hal::print(console, recieved_data1);
-    hal::print(console,
-               "\n======================================================\n\n");
+    // hal::print(console, "Recieveing Data from Ground Station...\n\n");
+    // auto recieved_data1 = HAL_CHECK(telemetry_recorder.recieve());
+    // hal::print(console,
+    //            "\n=================== RECIEVED DATA ===================\n");
+    // hal::print(console, recieved_data1);
+    // hal::print(console,
+    //            "\n======================================================\n\n");
 
     // hal::delay(clock, 500ms); // enable to see status of XBEE radio
 
