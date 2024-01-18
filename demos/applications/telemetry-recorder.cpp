@@ -22,18 +22,18 @@
 #include "../hardware_map.hpp"
 #include <telemetry-recorder/telemetry-recorder.hpp>
 
-
 #define M_PI 3.14159265358979323846
 
-float computeHeading(float x, float y, float offset = 0.0) { 
-    float angle = 360 - (atan2(y, x) * (180.0 / M_PI));
-    angle += offset;  // Apply offset
-    if (angle < 0) {
-        angle += 360;
-    } else if (angle >= 360) {
-        angle -= 360;
-    }
-    return angle;
+float computeHeading(float x, float y, float offset = 0.0)
+{
+  float angle = 360 - (atan2(y, x) * (180.0 / M_PI));
+  angle += offset;  // Apply offset
+  if (angle < 0) {
+    angle += 360;
+  } else if (angle >= 360) {
+    angle -= 360;
+  }
+  return angle;
 }
 
 hal::status application(hardware_map& p_map)
@@ -47,14 +47,16 @@ hal::status application(hardware_map& p_map)
   auto& gps = *p_map.gps;
   auto& i2c = *p_map.i2c;
 
-  hal::print(console, "\n\nTelemetry Recorder Starting. May take a few seconds...\n\n");
+  hal::print(console,
+             "\n\nTelemetry Recorder Starting. May take a few seconds...\n\n");
 
   (void)hal::delay(clock, 100ms);
   auto neoGPS = HAL_CHECK(hal::neo::neo_m9n::create(gps));
   (void)hal::delay(clock, 100ms);
   auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee, clock));
   (void)hal::delay(clock, 100ms);
-  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c)); // change barometer sampling rate
+  auto mpl_device = HAL_CHECK(
+    hal::mpl::mpl3115a2::create(i2c));  // change barometer sampling rate
   (void)hal::delay(clock, 100ms);
   auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c));
   (void)hal::delay(clock, 100ms);
@@ -72,13 +74,18 @@ hal::status application(hardware_map& p_map)
   float slp = 101325;                          // Default is 101325 Pa
   mpl_device.set_sea_pressure(slp);
 
-  // xbee_module.configure_xbee("C", "2015");  // Setting radio to channel C, and PANID 2015
+  // ======= Uncomment if you have an XBEE radio connected =======
+
+  // xbee_module.configure_xbee("C", "2015");  // Setting radio to channel C,
+  // and PANID 2015
 
   // hal::print(console, "\nTelemetry Configuration Complete...\n\n");
 
   while (true) {
     hal::print(console, "\n=================== Data ===================\n");
     auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
+
+    // ======= Uncomment this if you want to check for full GPS lock =======
 
     // if (telemetry_recorder_data.gps_locked == false) {
     //   hal::print(console, "!!!GPS not fully locked!!!\n");
@@ -123,13 +130,14 @@ hal::status application(hardware_map& p_map)
              telemetry_recorder_data.gps_alt,
              telemetry_recorder_data.gps_time);
 
-
-
     hal::print<512>(console, telem_data);
-    float heading = computeHeading(telemetry_recorder_data.mag_x, telemetry_recorder_data.mag_y, 0.0);
+    float heading = computeHeading(
+      telemetry_recorder_data.mag_x, telemetry_recorder_data.mag_y, 0.0);
     hal::print<128>(console, "\n\nHeading: %f°", heading);
 
     hal::print(console, "\n\n============================================\n\n");
+
+    // ======= Uncomment if you have an XBEE radio connected =======
 
     // hal::print(console, "Transmitting Data to Ground Station...\n\n");
 
@@ -147,7 +155,6 @@ hal::status application(hardware_map& p_map)
     //            "\n======================================================\n\n");
 
     // hal::delay(clock, 500ms); // enable to see status of XBEE radio
-
   }
 
   return hal::success();
