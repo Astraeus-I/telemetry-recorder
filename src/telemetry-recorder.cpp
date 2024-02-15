@@ -19,10 +19,9 @@ namespace hal::telemetry_recorder {
 result<telemetry_recorder> telemetry_recorder::create(
   hal::icm::icm20948& p_imu,
   hal::neo::neo_m9n& p_gps,
-  hal::mpl::mpl3115a2& p_baro,
-  hal::xbee::xbee_radio& p_xbee)
+  hal::mpl::mpl3115a2& p_baro)
 {
-  telemetry_recorder recorder{ p_imu, p_gps, p_baro, p_xbee };
+  telemetry_recorder recorder{ p_imu, p_gps, p_baro };
   return recorder;
 }
 
@@ -66,22 +65,6 @@ hal::result<telemetry_recorder::telemetry_data> telemetry_recorder::record()
 hal::result<float> telemetry_recorder::gps_baro_altitude_offset()
 {
   return m_data.gps_alt - m_data.baro_altitude;
-}
-
-hal::result<std::span<hal::byte>> telemetry_recorder::recieve()
-{
-  auto data = HAL_CHECK(m_xbee->read());
-  return data;
-}
-
-hal::status telemetry_recorder::transmit(std::string_view message) {
-    auto byte_data = hal::as_bytes(message);
-    m_xbee->write(byte_data);
-    return hal::success();
-}
-
-hal::status telemetry_recorder::transmit(const char* formatted_data) {
-    return this->transmit(std::string_view(formatted_data));
 }
 
 }  // namespace hal::telemetry_recorder

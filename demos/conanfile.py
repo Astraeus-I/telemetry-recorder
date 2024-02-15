@@ -31,6 +31,8 @@ class demos(ConanFile):
             self.requires("libhal-lpc40/[^2.1.1]")
         self.requires("telemetry-recorder/0.0.1")
         self.requires("libhal-util/[^3.0.0]")
+        self.requires("libhal-xbee/[^0.0.1]")
+
 
     def layout(self):
         platform_directory = "build/" + str(self.options.platform)

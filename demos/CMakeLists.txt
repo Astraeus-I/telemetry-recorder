@@ -28,6 +28,7 @@ endif()
 
 find_package(libhal-${platform_library} REQUIRED CONFIG)
 find_package(telemetry-recorder REQUIRED CONFIG)
+find_package(libhal-xbee REQUIRED CONFIG)
 find_package(libhal-util REQUIRED CONFIG)
 
 set(DEMOS telemetry-recorder)
@@ -40,6 +41,7 @@ target_compile_features(startup_code PRIVATE cxx_std_20)
 target_link_libraries(startup_code PRIVATE
     libhal::${platform_library}
     libhal::telemetry-recorder
+    libhal::xbee
     libhal::util)
 
 foreach(demo IN LISTS DEMOS)
@@ -54,6 +56,7 @@ foreach(demo IN LISTS DEMOS)
     target_link_libraries(${current_project} PRIVATE
         libhal::${platform_library}
         libhal::telemetry-recorder
+        libhal::xbee
         libhal::util
         startup_code)
     libhal_post_build(${current_project})

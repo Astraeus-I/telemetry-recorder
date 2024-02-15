@@ -20,6 +20,7 @@
 #include <libhal-util/spi.hpp>
 
 #include "../hardware_map.hpp"
+#include <libhal-xbee/xbee.hpp>
 #include <telemetry-recorder/telemetry-recorder.hpp>
 
 #define M_PI 3.14159265358979323846
@@ -55,15 +56,16 @@ hal::status application(hardware_map& p_map)
   (void)hal::delay(clock, 100ms);
   auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee, clock));
   (void)hal::delay(clock, 100ms);
-  auto mpl_device = HAL_CHECK(
-    hal::mpl::mpl3115a2::create(i2c));  // change barometer sampling rate
+  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(
+    i2c,
+    hal::mpl::mpl3115a2::mpl_os_rate::os64));  // change barometer sampling rate
   (void)hal::delay(clock, 100ms);
   auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c));
   (void)hal::delay(clock, 100ms);
 
   auto telemetry_recorder =
     HAL_CHECK(hal::telemetry_recorder::telemetry_recorder::create(
-      icm_device, neoGPS, mpl_device, xbee_module));
+      icm_device, neoGPS, mpl_device));
 
   icm_device.init_mag();
   (void)hal::delay(clock, 100ms);
@@ -85,7 +87,7 @@ hal::status application(hardware_map& p_map)
     hal::print(console, "\n=================== Data ===================\n");
     auto telemetry_recorder_data = HAL_CHECK(telemetry_recorder.record());
 
-    // ======= Uncomment this if you want to check for full GPS lock =======
+    // ======= Uncomment below to check for full GPS lock =======
 
     // if (telemetry_recorder_data.gps_locked == false) {
     //   hal::print(console, "!!!GPS not fully locked!!!\n");
@@ -137,24 +139,20 @@ hal::status application(hardware_map& p_map)
 
     hal::print(console, "\n\n============================================\n\n");
 
-    // ======= Uncomment if you have an XBEE radio connected =======
+    // ======= Uncomment below if you have an XBEE radio connected =======
 
-    // hal::print(console, "Transmitting Data to Ground Station...\n\n");
-
-    // std::string_view message = "\nHello here is some data\n";
-
-    // telemetry_recorder.transmit(message);
-    // telemetry_recorder.transmit(telem_data);
-
-    // hal::print(console, "Recieveing Data from Ground Station...\n\n");
-    // auto recieved_data1 = HAL_CHECK(telemetry_recorder.recieve());
+    // hal::delay(clock, 1000ms);
+    // auto recieved_data = HAL_CHECK(xbee_module.read());
     // hal::print(console,
     //            "\n=================== RECIEVED DATA ===================\n");
-    // hal::print(console, recieved_data1);
-    // hal::print(console,
-    //            "\n======================================================\n\n");
+    // hal::print(console, recieved_data);
 
-    // hal::delay(clock, 500ms); // enable to see status of XBEE radio
+    // std::string_view message = "Hello from the other side";
+    // xbee_module.write(hal::as_bytes(message));
+    // hal::print(console,
+    //            "\n=================== TRANSMITTED DATA ===================\n");
+    // hal::print(console, message);
+
   }
 
   return hal::success();
