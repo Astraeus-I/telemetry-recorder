@@ -83,4 +83,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   libhal::libhal
   libhal::util
   libhal::icm
+  libhal::neo
+  libhal::mpl
   libhal::mock)

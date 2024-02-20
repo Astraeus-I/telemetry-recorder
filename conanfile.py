@@ -66,7 +66,7 @@ class telemetry_recorder_conan(ConanFile):
         self.requires("libhal-util/[^3.0.0]")
         self.requires("libhal-icm/[^0.0.1]")
         self.requires("libhal-neo/[^0.0.1]")
-        self.requires("libhal-mpl/[^0.0.1]")
+        self.requires("libhal-mpl/[^0.0.2]")
 
     def layout(self):
         cmake_layout(self)
