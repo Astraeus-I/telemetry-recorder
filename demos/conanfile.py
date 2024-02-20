@@ -29,7 +29,7 @@ class demos(ConanFile):
     def requirements(self):
         if str(self.options.platform).startswith("lpc40"):
             self.requires("libhal-lpc40/[^2.1.1]")
-        self.requires("telemetry-recorder/0.0.1")
+        self.requires("telemetry-recorder/[^0.0.2]")
         self.requires("libhal-util/[^3.0.0]")
         self.requires("libhal-xbee/[^0.0.1]")
 

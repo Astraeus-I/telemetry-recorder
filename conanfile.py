@@ -24,7 +24,7 @@ required_conan_version = ">=2.0.6"
 
 class telemetry_recorder_conan(ConanFile):
     name = "telemetry-recorder"
-    version = "0.0.1"
+    version = "0.0.2"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://github.com/Astraeus-I/telemetry-recorder"
@@ -62,7 +62,7 @@ class telemetry_recorder_conan(ConanFile):
         self.test_requires("boost-ext-ut/1.1.9")
 
     def requirements(self):
-        self.requires("libhal/2.2.0", transitive_headers=True)
+        self.requires("libhal/[^2.2.0]", transitive_headers=True)
         self.requires("libhal-util/[^3.0.0]")
         self.requires("libhal-icm/[^0.0.1]")
         self.requires("libhal-neo/[^0.0.1]")
