@@ -56,9 +56,7 @@ hal::status application(hardware_map& p_map)
   (void)hal::delay(clock, 100ms);
   auto xbee_module = HAL_CHECK(hal::xbee::xbee_radio::create(xbee, clock));
   (void)hal::delay(clock, 100ms);
-  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(
-    i2c,
-    hal::mpl::mpl3115a2::mpl_os_rate::os64));  // change barometer sampling rate
+  auto mpl_device = HAL_CHECK(hal::mpl::mpl3115a2::create(i2c));
   (void)hal::delay(clock, 100ms);
   auto icm_device = HAL_CHECK(hal::icm::icm20948::create(i2c));
   (void)hal::delay(clock, 100ms);
