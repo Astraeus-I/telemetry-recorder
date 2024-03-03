@@ -29,20 +29,20 @@ on:
 
 jobs:
   ci:
-    uses: Astraeus-I/ci/.github/workflows/library.yml@main
+    uses: Astraeus-Library/ci/.github/workflows/library.yml@main
     secrets: inherit
   deploy:
-    uses: Astraeus-I/ci/.github/workflows/deploy.yml@main
+    uses: Astraeus-Library/ci/.github/workflows/deploy.yml@main
     secrets: inherit
   build_lpc4074:
-    uses: Astraeus-I/ci/.github/workflows/demo_builder.yml@main
+    uses: Astraeus-Library/ci/.github/workflows/demo_builder.yml@main
     with:
       profile: lpc4074
       processor_profile: https://github.com/libhal/libhal-armcortex.git
       platform_profile: https://github.com/libhal/libhal-lpc40.git
     secrets: inherit
   build_lpc4078:
-    uses: Astraeus-I/ci/.github/workflows/demo_builder.yml@main
+    uses: Astraeus-Library/ci/.github/workflows/demo_builder.yml@main
     with:
       profile: lpc4078
       processor_profile: https://github.com/libhal/libhal-armcortex.git

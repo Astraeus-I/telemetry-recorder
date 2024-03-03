@@ -27,7 +27,7 @@ class telemetry_recorder_conan(ConanFile):
     version = "0.0.2"
     license = "Apache-2.0"
     url = "https://github.com/conan-io/conan-center-index"
-    homepage = "https://github.com/Astraeus-I/telemetry-recorder"
+    homepage = "https://github.com/Astraeus-Library/telemetry-recorder"
     description = ("A collection of drivers for the telemetry-recorder")
     topics = ("telemetry-recorder", "libhal", "driver")
     settings = "compiler", "build_type", "os", "arch"

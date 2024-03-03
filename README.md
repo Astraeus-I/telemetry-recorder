@@ -1,10 +1,10 @@
 # telemetry-recorder
 
-[![✅ Checks](https://github.com/Astraeus-I/telemetry-recorder/actions/workflows/ci.yml/badge.svg)](https://github.com/Astraeus-I/telemetry-recorder/actions/workflows/ci.yml)
-[![Coverage](https://Astraeus-I.github.io/telemetry-recorder/coverage/coverage.svg)](https://Astraeus-I.github.io/telemetry-recorder/coverage/)
-[![GitHub stars](https://img.shields.io/github/stars/Astraeus-I/telemetry-recorder.svg)](https://github.com/Astraeus-I/telemetry-recorder/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Astraeus-I/telemetry-recorder.svg)](https://github.com/Astraeus-I/telemetry-recorder/network)
-[![GitHub issues](https://img.shields.io/github/issues/Astraeus-I/telemetry-recorder.svg)](https://github.com/Astraeus-I/telemetry-recorder/issues)
+[![✅ Checks](https://github.com/Astraeus-Library/telemetry-recorder/actions/workflows/ci.yml/badge.svg)](https://github.com/Astraeus-Library/telemetry-recorder/actions/workflows/ci.yml)
+[![Coverage](https://Astraeus-Library.github.io/telemetry-recorder/coverage/coverage.svg)](https://Astraeus-Library.github.io/telemetry-recorder/coverage/)
+[![GitHub stars](https://img.shields.io/github/stars/Astraeus-Library/telemetry-recorder.svg)](https://github.com/Astraeus-Library/telemetry-recorder/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Astraeus-Library/telemetry-recorder.svg)](https://github.com/Astraeus-Library/telemetry-recorder/network)
+[![GitHub issues](https://img.shields.io/github/issues/Astraeus-Library/telemetry-recorder.svg)](https://github.com/Astraeus-Library/telemetry-recorder/issues)
 
 libhal compatible device library for the telemetry-recorder device.
 
